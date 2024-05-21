@@ -98,18 +98,9 @@ script = ExtResource("1_svlwg")
 position = Vector2(0, -17.75)
 scale = Vector2(1, 1.01351)
 sprite_frames = SubResource("SpriteFrames_1oblt")
-animation = &"Running"
+animation = &"Idle"
 autoplay = "Idle"
-frame_progress = 0.686372
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -14)
 shape = SubResource("RectangleShape2D_0kir5")
-
-[node name="StateDebug" type="Label" parent="."]
-offset_left = -16.0
-offset_top = -53.0
-offset_right = 24.0
-offset_bottom = -27.0
-theme_override_font_sizes/font_size = 16
-text = "State"
