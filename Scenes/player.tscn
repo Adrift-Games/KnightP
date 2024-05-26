@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://6ltc0aewfa38"]
+[gd_scene load_steps=20 format=3 uid="uid://6ltc0aewfa38"]
 
 [ext_resource type="Texture2D" uid="uid://bumvaq2uqfrfp" path="res://Assets/adventurer-1.3-Sheet.png" id="1_l8ug0"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_svlwg"]
@@ -19,6 +19,14 @@ region = Rect2(100, 0, 50, 37)
 [sub_resource type="AtlasTexture" id="AtlasTexture_0gtjn"]
 atlas = ExtResource("1_l8ug0")
 region = Rect2(150, 0, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ynubk"]
+atlas = ExtResource("1_l8ug0")
+region = Rect2(0, 74, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pe4ni"]
+atlas = ExtResource("1_l8ug0")
+region = Rect2(50, 74, 50, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y4woh"]
 atlas = ExtResource("3_ppxr7")
@@ -44,6 +52,14 @@ region = Rect2(300, 296, 50, 37)
 atlas = ExtResource("3_ppxr7")
 region = Rect2(0, 333, 50, 37)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_iskwe"]
+atlas = ExtResource("1_l8ug0")
+region = Rect2(300, 74, 50, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_etn8t"]
+atlas = ExtResource("1_l8ug0")
+region = Rect2(350, 74, 50, 37)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_1oblt"]
 animations = [{
 "frames": [{
@@ -61,6 +77,17 @@ animations = [{
 }],
 "loop": true,
 "name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ynubk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pe4ni")
+}],
+"loop": true,
+"name": &"Jump_start",
 "speed": 5.0
 }, {
 "frames": [{
@@ -85,10 +112,22 @@ animations = [{
 "loop": true,
 "name": &"Running",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iskwe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_etn8t")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0kir5"]
-size = Vector2(8, 26)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ip4gk"]
+radius = 5.0
+height = 28.0
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -100,7 +139,8 @@ scale = Vector2(1, 1.01351)
 sprite_frames = SubResource("SpriteFrames_1oblt")
 animation = &"Idle"
 autoplay = "Idle"
+frame_progress = 0.278413
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -14)
-shape = SubResource("RectangleShape2D_0kir5")
+shape = SubResource("CapsuleShape2D_ip4gk")
