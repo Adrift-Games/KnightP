@@ -13,7 +13,7 @@ extends CharacterBody2D
 @export var variable_jump_downwards_force:float=0.15
 
 var acceleration:float = 750.00
-var air_acceleration:float =900.00
+var air_acceleration:float =1000.00
 
 var friction:float = 1150.00
 var air_friction:float = 1000.00
@@ -27,6 +27,8 @@ var jump_performed:bool=false
 var coyote_jump_buffering:int=10
 var coyote_jump_counter:int = 0
 
+var apex_threshold:float = 50
+var apex_acceleration:float = 600
 
 func _ready():
 	pass
@@ -45,7 +47,12 @@ func _physics_process(delta):
 			velocity.x = move_toward(velocity.x,0,air_friction*delta)
 		
 		#Apply Gravity--------------------------------
-		velocity.y+=gravity*delta
+		if abs(velocity.y) < apex_threshold:
+			#print("APEX")
+			velocity.y+=apex_acceleration*delta
+		else:
+			#print("GRAV")
+			velocity.y+=gravity*delta
 		
 		#Apply Variable jump if released input early--------------------------------
 		if Input.is_action_just_released("jump") and velocity.y<0:
@@ -71,7 +78,7 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("jump"):
 			velocity.y=jump_velocity
 			jump_performed=true	
-			
+
 		#reset coyote--------------------------------
 		coyote_jump_counter=coyote_jump_buffering
 	#Jump buffering code-----------------------------
@@ -87,7 +94,7 @@ func _physics_process(delta):
 	velocity.x=clampf(velocity.x,-max_speed,max_speed)
 	velocity.y=clampf(velocity.y,-max_falling_speed,max_falling_speed)
 	
-	print("velocity X: ",velocity.x,"-----","velocity Y: ",velocity.y)
+	#print("velocity X: ",velocity.x,"-----","velocity Y: ",velocity.y)
 	
 	move_and_slide()
 	
@@ -108,4 +115,6 @@ func handle_animations(direction):
 		else:
 			animated_sprite_2d.play("fall")
 
-	
+
+
+
