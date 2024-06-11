@@ -1,18 +1,20 @@
 [gd_scene load_steps=3 format=3 uid="uid://b5djp17mkhnt"]
 
-[ext_resource type="Texture2D" uid="uid://k2m4spid6hjp" path="res://Assets/TX Tileset Ground.png" id="1_c4bwu"]
+[ext_resource type="Texture2D" uid="uid://c0likkvgcuk6p" path="res://Assets/world_tileset.png" id="1_hjen3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oymd2"]
-size = Vector2(60, 31)
+size = Vector2(46, 9.5)
 
 [node name="Platform" type="AnimatableBody2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_c4bwu")
+position = Vector2(-21, -10)
+scale = Vector2(1, 0.933333)
+texture = ExtResource("1_hjen3")
 region_enabled = true
-region_rect = Rect2(285.599, -0.0928173, 65.6379, 35.0494)
+region_rect = Rect2(144.302, 0.590515, 46.2652, 9.61123)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, -1.5)
+position = Vector2(-21, -10.75)
 shape = SubResource("RectangleShape2D_oymd2")
 one_way_collision = true

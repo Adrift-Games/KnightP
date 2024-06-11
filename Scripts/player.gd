@@ -22,16 +22,24 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var jump_buffering:int = 10 #1/4 of a second due to _physics_process iterates 60 a sec  
 var jump_buffering_counter:int =0
+var jump_buffer_queued:bool = false
 var jump_performed:bool=false
  
 var coyote_jump_buffering:int=10
 var coyote_jump_counter:int = 0
 
 var apex_threshold:float = 50
-var apex_acceleration:float = 600
+var apex_acceleration:float = 500
+var apex_speed_boost:float = 2
+
+var last_direction:int = 0
+var direction_switch_speed:float =75
+
+var airborne_jumps_tokens:int
+var max_airborne_jumps:int=1
 
 func _ready():
-	pass
+	airborne_jumps_tokens=max_airborne_jumps
 
 
 func _physics_process(delta):
@@ -50,6 +58,12 @@ func _physics_process(delta):
 		if abs(velocity.y) < apex_threshold:
 			#print("APEX")
 			velocity.y+=apex_acceleration*delta
+
+		elif is_on_wall() and velocity.y>0:
+			velocity.y+=25*delta
+			print(velocity.y)
+			
+						
 		else:
 			#print("GRAV")
 			velocity.y+=gravity*delta
@@ -61,10 +75,13 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("jump"): 
 			jump_buffering_counter=jump_buffering
 		
+		#Double jump 
+		perform_double_jump()
+		
 		#set Coyote jump  --------------------------------
 		coyote_jump_counter-=1
-		if Input.is_action_just_pressed("jump") and coyote_jump_counter>0 and jump_performed==false:
-			velocity.y=jump_velocity	
+		perform_jump(true,false) #perform coyote jump
+		
 		
 	else:
 		#velocity while grounded--------------------------------
@@ -74,28 +91,32 @@ func _physics_process(delta):
 			velocity.x = move_toward(velocity.x,0,friction*delta)
 		
 		#perform jump --------------------------------
-		jump_performed=false
-		if Input.is_action_just_pressed("jump"):
-			velocity.y=jump_velocity
-			jump_performed=true	
-
+		perform_jump(false,false)
 		#reset coyote--------------------------------
 		coyote_jump_counter=coyote_jump_buffering
+		#reset airborn jumps
+		airborne_jumps_tokens=max_airborne_jumps
 	#Jump buffering code-----------------------------
 	if jump_buffering_counter > 0:
 		jump_buffering_counter -=1 
 	if jump_buffering_counter >0 and is_on_floor():
-		velocity.y=jump_velocity	
+		perform_jump(false,true)
 		jump_buffering_counter=0
 		
+		
+		
 	handle_animations(direction)
-	
+	#comment direction switching---------------------
+	if(last_direction != direction):
+		if(direction!=0):
+			velocity.x+=direction_switch_speed*direction
+			last_direction=direction
+
 	#Clamp velocities ----------------------------------
 	velocity.x=clampf(velocity.x,-max_speed,max_speed)
 	velocity.y=clampf(velocity.y,-max_falling_speed,max_falling_speed)
-	
+
 	#print("velocity X: ",velocity.x,"-----","velocity Y: ",velocity.y)
-	
 	move_and_slide()
 	
 func handle_animations(direction):
@@ -110,11 +131,26 @@ func handle_animations(direction):
 		animated_sprite_2d.play("Running")
 	
 	if not is_on_floor():
-		if velocity.y <0:
-			animated_sprite_2d.play("Jump_start")
-		else:
-			animated_sprite_2d.play("fall")
+		animated_sprite_2d.play("Fall")
 
+func perform_jump(is_coyote,is_from_jumpBuffer):
+			
+	if not is_from_jumpBuffer:
+		if Input.is_action_just_pressed("jump"):
+			if not is_coyote:
+				velocity.y=jump_velocity
+				jump_performed=true	
+			
+			elif is_coyote and coyote_jump_counter>0 and jump_performed==false:
+				velocity.y=jump_velocity
+		else: 
+			jump_performed=false
+	else:
+		velocity.y=jump_velocity
+		jump_performed=true	
 
-
-
+func perform_double_jump():
+	if(airborne_jumps_tokens>0 and Input.is_action_just_pressed("jump")):
+		velocity.y=jump_velocity
+		airborne_jumps_tokens-=1
+	

@@ -11,11 +11,5 @@ func _process(delta):
 	pass
 
 
-
-
-
-
-
-
 func _on_death_zone_body_entered(body):
 	get_tree().reload_current_scene() # Replace with function body.
