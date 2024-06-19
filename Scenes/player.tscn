@@ -1,7 +1,10 @@
-[gd_scene load_steps=26 format=3 uid="uid://6ltc0aewfa38"]
+[gd_scene load_steps=29 format=3 uid="uid://6ltc0aewfa38"]
 
-[ext_resource type="Script" path="res://Scripts/player.gd" id="1_svlwg"]
+[ext_resource type="Script" path="res://Scripts/Player/player_v1.gd" id="1_akoud"]
 [ext_resource type="Texture2D" uid="uid://bg4v1mkvgaulc" path="res://Assets/knight.png" id="2_p52f3"]
+[ext_resource type="Script" path="res://Scripts/State Machine/state_machine.gd" id="3_8c4ij"]
+[ext_resource type="Script" path="res://Scripts/State Machine/States/idle_state.gd" id="4_vbc6x"]
+[ext_resource type="Script" path="res://Scripts/State Machine/States/jump_state.gd" id="5_fiwj0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8w7pf"]
 atlas = ExtResource("2_p52f3")
@@ -174,15 +177,28 @@ height = 14.0
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
-script = ExtResource("1_svlwg")
+script = ExtResource("1_akoud")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="Animations" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -17.75)
 scale = Vector2(1, 1.01351)
 sprite_frames = SubResource("SpriteFrames_1oblt")
 animation = &"Fall"
 autoplay = "Idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Collision" type="CollisionShape2D" parent="."]
 position = Vector2(0, -13)
 shape = SubResource("CapsuleShape2D_ip4gk")
+
+[node name="State_machine" type="Node" parent="." node_paths=PackedStringArray("starting_State")]
+script = ExtResource("3_8c4ij")
+starting_State = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="State_machine" node_paths=PackedStringArray("jump_state")]
+script = ExtResource("4_vbc6x")
+jump_state = NodePath("../Jump")
+move_speed = 0.0
+
+[node name="Jump" type="Node" parent="State_machine" node_paths=PackedStringArray("idle_state")]
+script = ExtResource("5_fiwj0")
+idle_state = NodePath("../Idle")
